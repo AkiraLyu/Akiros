@@ -1,3 +1,5 @@
+use std::fmt;
+
 #[derive(Debug)]
 pub enum ShellError {
     // Lex(LexError),
@@ -23,3 +25,15 @@ impl From<std::io::Error> for ShellError {
         ShellError::Io(error)
     }
 }
+
+impl fmt::Display for ShellError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            ShellError::Io(error) => write!(f, "{error}"),
+            ShellError::CommandNotFound(command) => write!(f, "{command}: command not found"),
+            ShellError::Builtin(message) => write!(f, "{message}"),
+        }
+    }
+}
+
+impl std::error::Error for ShellError {}
